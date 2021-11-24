@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useCallback, useRef, useState} from 'react';
+import EditorWindow from './components/Editor/EditorWindow';
 
 function App() {
+  let timeout = useRef();
+  const [sourceDoc, setSouceDoc] = useState('');
+  const forwardSetSouceDoc = useCallback((source) => {
+    if(timeout.current) {
+      clearTimeout(timeout.current)
+    }
+    timeout.current = setTimeout(() => {
+      setSouceDoc(source);
+    },1000)
+  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <EditorWindow sourceDocHandler={forwardSetSouceDoc}/>
+      <iframe srcDoc={sourceDoc} frameBorder="0" title="viewBox"></iframe>
+    </React.Fragment>
   );
 }
 
